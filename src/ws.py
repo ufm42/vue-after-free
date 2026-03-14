@@ -4,7 +4,11 @@ import asyncio
 import pathlib
 import argparse
 import websockets
-import readline
+
+try:
+    import readline
+except ImportError:
+    pass
 
 parser = argparse.ArgumentParser(description="WebSocket client for JSMAF")
 parser.add_argument("ip", help="IP address of the PS4")
@@ -31,7 +35,7 @@ async def send_file(ws: websockets.ClientConnection, file_path: str):
         message = path.read_text("utf-8")
         await ws.send(message)
 
-        print(f"[*] Sent {file_path} ({len(message)} bytes) to server")
+        print(f"[*] Sent {file_path} ({len(message)} bytes) to server !!")
     except Exception as e:
         print(f"[!] Failed to send file: {e}")
 
@@ -80,7 +84,6 @@ async def main():
         receiver_task = None
         command_task = None
         try:
-#            print(f"[*] Connecting to {IP}:{PORT}...")
             async with websockets.connect(f"ws://{IP}:{PORT}", ping_timeout=None) as ws:
                 print(f"[*] Connected to {IP}:{PORT} !!")
                 receiver_task = asyncio.create_task(receiver(ws))
@@ -91,8 +94,6 @@ async def main():
                     return_when=asyncio.FIRST_COMPLETED,
                 )
         except Exception as e:
-#            print("[!] Error:", e)
-#            print(f"[*] Retrying in {DELAY} seconds...")
             await asyncio.sleep(DELAY)
         finally:
             if receiver_task is not None:

@@ -1,34 +1,44 @@
-// Remote loader - downloads and evals inject.js from WebSocketServer
+"use strict";
+
+// Remote loader using WebSocketServer
+
+jsmaf.remotePlay = true;
 
 var WS_PORT = 40404;
+var WS = new jsmaf.WebSocketServer();
 
 try {
-    // start WebSocket server listening to PS4_IP:WS_PORT 
-    ws = new jsmaf.WebSocketServer();
-    ws.port = WS_PORT;
+    // start WebSocket server listening to PS4_IP:PORT
+    WS.port = WS_PORT;
 
     // move logo to top of screen
     for (var i = 0; i < jsmaf.root.children.length; i++) {
         var child = jsmaf.root.children[i];
         if (child.url && child.url.indexOf("logo") !== -1) {
-            child.y = 20;  // 20px from top
+            child.y = 20; // 20px from top
             break;
         }
     }
 
+    var style = new jsmaf.Style();
+    style.name = "color_white";
+    style.color = "white";
+
     // Create text object for logs
     var logText = new jsmaf.Text();
-    logText.background = "#FFFFFF";
-    logText.x = 20;
-    logText.y = 120;
+    logText.x = 50;
+    logText.y = 150;
+    logText.style = "color_white";
+    logText.width = jsmaf.screenWidth - (logText.x * 2);
+    logText.height = jsmaf.screenHeight - (logText.y * 2);
     jsmaf.root.children.push(logText);
-    
+
     // Log buffer
     var logBuffer = [];
-    var maxLines = 38; 
+    var maxLines = Math.floor((logText.height - logText.x) / 20);
 
     // Replace global log() to show on screen
-    _log = function(msg, screen) {
+    this._log = function(msg, screen) {
         if (screen) {
             logBuffer.push(msg);
             if (logBuffer.length > maxLines) {
@@ -37,25 +47,30 @@ try {
             logText.text = logBuffer.join("\n");
         }
 
-        ws.broadcast(msg); // Still send to websocket too
+        WS.broadcast(msg);
     }
-    log = function(msg) {
-        _log(`[+] ${msg}`, true)
-    }
-    debug = function(msg) {
-        _log(`[*] ${msg}`, false)
-    }
-    error = function(msg) {
-        _log(`[-] ${msg}`, true)
+
+    this.log = function(msg) {
+        _log(`[+] ${msg}`, true);
     }
     
+    this.debug = function(msg) {
+        _log(`[*] ${msg}`, false);
+    }
+
+    this.error = function(msg) {
+        _log(`[-] ${msg}`, true);
+    }
+
     log("=== VUE AFTER FREE ===");
 
     // handle WebSocket received messages
-    ws.onmessage = function(c, e) {
+    WS.onmessage = function(c, e) {
         if (e.data.length === 1 && e.data[0].constructor.name === "String") {
             try {
-                jsmaf.eval(e.data[0]);
+                var payload = e.data[0];
+                debug(`Recieved payload (${payload.length} bytes) from client !!`);
+                eval(payload);
             } catch(err) {
                 error(err.message);
                 for (var i of err.stack.split('\n')) {
@@ -63,7 +78,7 @@ try {
                 }
             }
         } else {
-            error("Failed to receive valid message !!")
+            error("Failed to receive valid payload !!");
         }
     };
 } catch(e) {
