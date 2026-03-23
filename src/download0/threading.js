@@ -174,7 +174,7 @@ class Thread {
 class JSThread {
   constructor(name, script) {
     this.script = script;
-    this.thread = new Thread(0x200000, name);
+    this.thread = new Thread(0x80000, name);
     this.js_frame = new Frame(["script_cstr", "ctx", "script", "exception", "ret", "exception_str", "ret_str", "exception_str_size", "ret_str_size", "exception_cstr", "ret_cstr"]);
     this.js_stack = new Stack(0x1000);
 
@@ -247,16 +247,23 @@ class JSThread {
     this.thread.inject(this.js_stack);
 
     this.thread.resume();
+
+    sleep(1e8);
   }
 
   join() {
     this.thread.join();
-    
+
+    debug(`${this.thread.name} returned !!`);
+
     var exception_cstr = this.js_frame.get_value("exception_cstr");
     var ret_cstr = this.js_frame.get_value("ret_cstr");
 
     this.exception = String.from(exception_cstr);
     this.ret = String.from(ret_cstr);
+
+    debug(`exception: ${this.exception}`);
+    debug(`return: ${this.ret}`);
 
     free.invoke(exception_cstr);
     free.invoke(ret_cstr);

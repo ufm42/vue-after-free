@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Send inject.js to PS4 for execution"""
+import json
 import asyncio
 import pathlib
 import argparse
@@ -24,20 +25,29 @@ PORT = args.port
 DELAY = args.delay
 RETRY = True
 
-
-async def send_file(ws: websockets.ClientConnection, file_path: str):
+async def send_file(ws: websockets.ClientConnection, command: str, file_path: str):
     try:
         path = pathlib.Path(file_path)
         if not path.is_file():
             print(f"[!] File not found: {file_path}")
             return
+        
+        content = path.read_text("utf-8")
 
-        message = path.read_text("utf-8")
+        payload = {
+            "command": command,
+            "filename": path.name,
+            "size": len(content),
+            "content": content
+        }
+        
+        message = json.dumps(payload)
+        
         await ws.send(message)
 
-        print(f"[*] Sent {file_path} ({len(message)} bytes) to server !!")
+        print(f"[*] Sent message ({len(message)} bytes) to server !!")
     except Exception as e:
-        print(f"[!] Failed to send file: {e}")
+        print(f"[!] Failed to send message: {e}")
 
 
 async def command(ws: websockets.ClientConnection):
@@ -55,15 +65,18 @@ async def command(ws: websockets.ClientConnection):
 
         parts = cmd.split(maxsplit=1)
 
-        if len(parts) == 2 and parts[0].lower() == "send":
-            await send_file(ws, parts[1])
-        elif cmd.lower() in ("quit", "exit", "disconnect"):
+        if len(parts) == 2:
+            command = parts[0].lower()
+            if (command in ["run", "upload"]):
+                await send_file(ws, command, parts[1])
+                continue
+        if cmd.lower() in ("quit", "exit", "disconnect"):
             print("[*] Disconnecting...")
             await ws.close()
             RETRY = False
             break
-        else:
-            print("[*] Unknown command. Use: send <path-to-file>")
+        
+        print("[*] Unknown command. Use: send <path-to-file>")
 
 
 async def receiver(ws: websockets.ClientConnection):

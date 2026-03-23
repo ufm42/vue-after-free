@@ -68,9 +68,35 @@ try {
     WS.onmessage = function(c, e) {
         if (e.data.length === 1 && e.data[0].constructor.name === "String") {
             try {
-                var payload = e.data[0];
-                debug(`Recieved payload (${payload.length} bytes) from client !!`);
-                eval(payload);
+                var message = e.data[0];
+
+                debug(`Recieved message (${message.length} bytes) from client !!`);
+
+                var payload = JSON.parse(message);
+                if (payload.content.length !== payload.size) {
+                    throw new Error(`Expected ${payload.size} bytes got ${payload.content.length} !!`)
+                }
+
+                switch (payload.command) {
+                    case "run":
+                        eval(payload.content);
+                        break;
+                    case "upload":
+                        var xhr = new jsmaf.XMLHttpRequest();
+                        xhr.onreadystatechange = function() {
+                          if (xhr.readyState === 4) {
+                            if (xhr.status === 0 || xhr.status === 200) {
+                                log(`Uploaded file ${payload.filename} to download0 successfully !!`);
+                            } else {
+                                throw new Error(`Unable to upload file ${payload.filename} to download0 !!`);
+                            }
+                          }
+                        }
+
+                        xhr.open("POST", `file://../download0/${payload.filename}`, true);
+                        xhr.send(payload.content);
+                        break;
+                }              
             } catch(err) {
                 error(err.message);
                 for (var i of err.stack.split('\n')) {

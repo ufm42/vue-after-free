@@ -8,10 +8,7 @@ var CPU_LEVEL_WHICH = 3;
 var RTP_PRIO_REALTIME = 2;
 
 var COMMAND_IDLE = -1;
-var COMMAND_SHUTDOWN = -2;
-var COMMAND_UIO_READ = 0;
-var COMMAND_UIO_WRITE = 1;
-var COMMAND_IOV_RECVMSG = 0;
+var COMMAND_STOP = -2;
 
 var pthread_cond_broadcast = new NativeFunction(jsc_base.add(0x860), "bigint");
 var pthread_cond_wait = new NativeFunction(jsc_base.add(0x8B0), "bigint");
@@ -31,6 +28,7 @@ var Worker = Worker || class {
             this.can_free = true;
             this.ctx.total = total;
             this.ctx.cmd = COMMAND_IDLE;
+            this.ctx.stop = 0;
 
             this.ctx.mutex = alloc(8);
             this.ctx.cond = alloc(8);
@@ -62,6 +60,14 @@ var Worker = Worker || class {
             throw new Error(`Unable to lock mutex ${this.ctx.mutex} !!`);
         }
 
+        if (this.ctx.stop === 1) {
+            if (pthread_mutex_unlock.invoke(this.ctx.mutex).neq(0)) {
+                throw new Error(`Unable to unlock mutex ${this.ctx.mutex} !!`);
+            }
+
+            return;
+        }
+
         this.ctx.started = 0;
         this.ctx.finished = 0;
         this.ctx.cmd = cmd;
@@ -70,11 +76,9 @@ var Worker = Worker || class {
             throw new Error(`Unable to broadcast cond ${this.ctx.cond} !!`);
         }
 
-        if (this.ctx.cmd !== COMMAND_SHUTDOWN) {
-            while (this.ctx.started < this.ctx.total) {
-                if (pthread_cond_wait.invoke(this.ctx.cond, this.ctx.mutex).neq(0)) {
-                    throw new Error(`Unable to wait for cond ${this.ctx.cond} !!`);
-                }
+        while (this.ctx.started < this.ctx.total && this.ctx.stop === 0) {
+            if (pthread_cond_wait.invoke(this.ctx.cond, this.ctx.mutex).neq(0)) {
+                throw new Error(`Unable to wait for cond ${this.ctx.cond} !!`);
             }
         }
 
@@ -88,19 +92,25 @@ var Worker = Worker || class {
             throw new Error(`Unable to lock mutex ${this.ctx.mutex} !!`);
         }
 
-        while (this.ctx.cmd === COMMAND_IDLE || this.ctx.finished !== 0) {
+        while ((this.ctx.cmd === COMMAND_IDLE || this.ctx.finished !== 0) && this.ctx.stop === 0) {
             if (pthread_cond_wait.invoke(this.ctx.cond, this.ctx.mutex).neq(0)) {
                 throw new Error(`Unable to wait for cond ${this.ctx.cond} !!`);
             }
         }
 
-        if (this.ctx.cmd !== COMMAND_SHUTDOWN) {
-            this.ctx.started++;
+        if (this.ctx.stop === 1) {
+            if (pthread_mutex_unlock.invoke(this.ctx.mutex).neq(0)) {
+                throw new Error(`Unable to unlock mutex ${this.ctx.mutex} !!`);
+            }
 
-            if (this.ctx.started === this.ctx.total) {
-                if (pthread_cond_broadcast.invoke(this.ctx.cond).neq(0)) {
-                    throw new Error(`Unable to broadcast cond ${this.ctx.cond} !!`);
-                }
+            return COMMAND_STOP;
+        }
+
+        this.ctx.started++;
+
+        if (this.ctx.started === this.ctx.total) {
+            if (pthread_cond_broadcast.invoke(this.ctx.cond).neq(0)) {
+                throw new Error(`Unable to broadcast cond ${this.ctx.cond} !!`);
             }
         }
 
@@ -136,7 +146,7 @@ var Worker = Worker || class {
             throw new Error(`Unable to lock mutex ${this.ctx.mutex} !!`);
         }
 
-        while (this.ctx.finished < this.ctx.total) {
+        while (this.ctx.finished < this.ctx.total && this.ctx.stop === 0) {
             if (pthread_cond_wait.invoke(this.ctx.cond, this.ctx.mutex).neq(0)) {
                 throw new Error(`Unable to wait for cond ${this.ctx.cond} !!`);
             }
@@ -148,10 +158,26 @@ var Worker = Worker || class {
             throw new Error(`Unable to unlock mutex ${this.ctx.mutex} !!`);
         }
     }
+
+    signal_stop() {
+        if (pthread_mutex_lock.invoke(this.ctx.mutex).neq(0)) {
+            throw new Error(`Unable to lock mutex ${this.ctx.mutex} !!`);
+        }
+
+        this.ctx.stop = 1;
+
+        if (pthread_cond_broadcast.invoke(this.ctx.cond).neq(0)) {
+            throw new Error(`Unable to broadcast cond ${this.ctx.cond} !!`);
+        }
+
+        if (pthread_mutex_unlock.invoke(this.ctx.mutex).neq(0)) {
+            throw new Error(`Unable to unlock mutex ${this.ctx.mutex} !!`);
+        }
+    }
 };
 //#endregion
 //#region Functions
-function _cpuset_setaffinity(core) {
+function pin_to_core(core) {
     var mask_addr = alloc(cpuset.sizeof);
     var mask = cpuset.from(mask_addr);
 
@@ -162,7 +188,7 @@ function _cpuset_setaffinity(core) {
     }
 };
 
-function _rtprio_thread(value) {
+function set_rtprio(value) {
     var prio_addr = alloc(rtprio.sizeof);
     var prio = rtprio.from(prio_addr);
     
@@ -189,10 +215,11 @@ var worker_ctx = new Struct("worker_ctx", [
     { type: "Int32", name: "started" },
     { type: "Int32", name: "finished" },
     { type: "Int32", name: "cmd" },
+    { type: "Int32", name: "stop" },
     { type: "Uint64", name: "mutex" }, // modified only in main thread
     { type: "Uint64", name: "cond" }  // modified only in main thread
 ]);
 //#endregion
 
-_cpuset_setaffinity(MAIN_CORE);
-_rtprio_thread(0x100);
+pin_to_core(MAIN_CORE);
+set_rtprio(0x100);

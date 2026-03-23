@@ -1,5 +1,5 @@
-send ntctrl.js
-[*] Sent ntctrl.js (61977 bytes) to server !!
+send netctrl.js
+[*] Sent netctrl.js (61977 bytes) to server !!
 > [*] Recieved payload (61977 bytes) from client !!
 [+] ===USERLAND===
 [+] ARW already achieved !!
